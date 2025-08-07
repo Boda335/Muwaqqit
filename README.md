@@ -40,7 +40,7 @@ npm install muwaqqit
 
 ## 💡 Usage Example
 
-### <img src="https://i.postimg.cc/QCWvqGLJ/typescript.png" style="height: 1.5em; vertical-align: middle;"/> TypeScript (ES Modules)
+### TypeScript (ES Modules)
 
 ```ts
 import { PrayerTimes } from "muwaqqit";
@@ -68,7 +68,7 @@ console.log(times);
 
 ---
 
-### <img src="https://i.postimg.cc/7b8dssw8/js.png" style="height: 1.5em; vertical-align: middle;"/> JavaScript (CommonJS)
+### JavaScript (CommonJS)
 
 ```js
 const { PrayerTimes } = require("muwaqqit");
