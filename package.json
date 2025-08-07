@@ -1,0 +1,42 @@
+{
+  "name": "muwaqqit",
+  "version": "1.0.0",
+  "description": "A powerful and flexible TypeScript library for calculating Islamic prayer times based on location, with customizable settings.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test",
+    "test": "echo \"No tests written yet. Add tests in the future.\""
+  },
+  
+  "keywords": [
+    "prayer-times",
+    "islam",
+    "adhan",
+    "salat",
+    "muslim",
+    "times",
+    "islamic-prayer",
+    "coordinates",
+    "city"
+  ],
+  "author": "boda335",
+  "license": "Apache-2.0 license",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Boda335/Muwaqqit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Boda335/Muwaqqit/issues"
+  },
+  "homepage": "https://github.com/Boda335/Muwaqqit#readme",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
