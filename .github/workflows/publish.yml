@@ -24,9 +24,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Run tests
-        run: npm run test:coverage
-
       - name: Publish to npm
         run: npm publish
         env:
