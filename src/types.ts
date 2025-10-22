@@ -17,3 +17,33 @@ export interface PrayerTimings {
   Isha: string;
   [key: string]: string;
 }
+
+export interface CalendarEntry {
+  date: {
+    readable: string;
+    timestamp: string;
+    gregorian: GregorianDate;
+    hijri: HijriDate;
+  };
+  timings: PrayerTimings;
+}
+
+export type CalendarResponse = CalendarEntry[];
+
+export interface GregorianDate {
+  date: string;
+  format?: string;
+  day?: string;
+  weekday?: { en: string; ar?: string };
+  month?: { number: number; en: string; ar?: string };
+  year?: string;
+}
+
+export interface HijriDate {
+  date: string;
+  format?: string;
+  day?: string;
+  weekday?: { en: string; ar?: string };
+  month?: { number: number; en: string; ar?: string };
+  year?: string;
+}

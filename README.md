@@ -1,5 +1,4 @@
-
-![Logo](https://i.postimg.cc/wvMNxrBh/Add-a-heading-2.png)
+![Logo](https://l.top4top.io/p_3582op1r91.png)
 
 <div align="center">
 
@@ -10,23 +9,27 @@
 
 # Muwaqqit
 
-**Muwaqqit** is a powerful utility to fetch Islamic prayer times using location (city/country or coordinates). Ideal for Discord bots, web apps, and Islamic tools.
+**Muwaqqit** is a modern and flexible TypeScript library for fetching Islamic prayer times, full calendars, and Hijri/Gregorian date conversions — powered by the [AlAdhan API](https://aladhan.com/prayer-times-api).
 
 ```
-🕌 Built using the AlAdhan API  
-🧠 Supports flexible time formats and multiple calculation methods
+🕌 Built with AlAdhan API
+📅 Supports full-month and date-range calendars
+🕰️ Works with city/country or GPS coordinates
+🗓️ Converts between Gregorian ↔ Hijri
 ```
 
 ---
 
 ## 🔥 Features
 
-- 🌍 Supports city/country OR latitude/longitude
-- 📆 Fetch times for today or any date
-- 🧮 Choose from multiple calculation methods
-- 🕰️ Return times in 12h, 24h, or ISO format
-- 🌐 Auto timezone handling (or custom override)
-- 💡 Built in TypeScript, ready for Node.js apps & bots
+- 🌍 Fetch times by **city/country** or **latitude/longitude**
+- 🕰️ Retrieve **daily** prayer times
+- 📅 Retrieve **monthly** prayer calendar
+- 📆 Retrieve prayer times for a **custom date range**
+- 🗓️ Convert between **Gregorian ↔ Hijri** dates
+- 🧮 Choose from multiple **calculation methods**
+- ⏱️ Choose **12h / 24h / ISO** time formats
+- 💡 Written in TypeScript — ready for Node.js, bots & web apps
 
 ---
 
@@ -43,27 +46,36 @@ npm install muwaqqit
 ### TypeScript (ES Modules)
 
 ```ts
-import { PrayerTimes } from "muwaqqit";
+import { PrayerTimes } from 'muwaqqit';
 
 const pt = new PrayerTimes({
-  city: "Cairo",
-  country: "Egypt",
-  method: 5, // Muslim World League
-  format: "24h"
+  city: 'Cairo',
+  country: 'Egypt',
+  method: 5, // Egyptian General Authority of Survey
+  format: '12h',
 });
 
-const times = await pt.getTimes(new Date());
+// 1️⃣ Today's prayer times
+const today = await pt.getTimes(new Date());
+console.table(today);
 
-console.log(times);
-/*
-{
-  Fajr: '04:10',
-  Dhuhr: '12:45',
-  Asr: '16:15',
-  Maghrib: '19:00',
-  Isha: '20:30'
-}
-*/
+// 2️⃣ Full month calendar
+const month = await pt.getMonth(10, 2025);
+month.forEach(day => {
+  console.log(`${day.date.readable} → Fajr: ${day.timings.Fajr}, Dhuhr: ${day.timings.Dhuhr}, Asr: ${day.timings.Asr}, Maghrib: ${day.timings.Maghrib}, Isha: ${day.timings.Isha}`);
+});
+
+// 3️⃣ Date range (1–7 Oct 2025)
+const range = await pt.getRange('01-10-2025', '07-10-2025');
+range.forEach(day => console.log(day.date.readable, day.timings));
+
+// 4️⃣ Gregorian → Hijri
+const hijri = await pt.toHijri('23-10-2025');
+console.table(hijri);
+
+// 5️⃣ Hijri → Gregorian
+const gregorian = await pt.toGregorian('20-04-1447');
+console.table(gregorian);
 ```
 
 ---
@@ -71,25 +83,19 @@ console.log(times);
 ### JavaScript (CommonJS)
 
 ```js
-const { PrayerTimes } = require("muwaqqit");
+const { PrayerTimes } = require('muwaqqit');
 
 const pt = new PrayerTimes({
-  city: "Cairo",
-  country: "Egypt",
+  city: 'Cairo',
+  country: 'Egypt',
   method: 5,
-  format: "12h"
+  format: '24h',
 });
 
-pt.getTimes(new Date())
-  .then(times => {
-    console.log("Prayer Times:");
-    console.log(`Fajr: ${times.Fajr}`);
-    console.log(`Dhuhr: ${times.Dhuhr}`);
-    console.log(`Asr: ${times.Asr}`);
-    console.log(`Maghrib: ${times.Maghrib}`);
-    console.log(`Isha: ${times.Isha}`);
-  })
-  .catch(err => console.error("Error:", err));
+(async () => {
+  const times = await pt.getTimes(new Date());
+  console.log("Today's Prayer Times:", times);
+})();
 ```
 
 ---
@@ -98,42 +104,55 @@ pt.getTimes(new Date())
 
 ### `new PrayerTimes(options)`
 
-| Option       | Type                                 | Required | Description |
-|--------------|--------------------------------------|----------|-------------|
-| `city`       | `string`                             | ✅      | City name *(required if not using `latitude`)* |
-| `country`    | `string`                             | ✅     | Country name *(required if not using `latitude`)* |
-| `latitude`   | `number`                             | ✅    | Decimal latitude *(required if not using `city`)* |
-| `longitude`  | `number`                             | ✅    | Decimal longitude *(required if not using `city`)* |
-| `method`     | `number`                             | ❌       | Calculation method ID *(default = 2)* |
-| `format`     | `"12h"` \| `"24h"` \| `"iso"`        | ❌       | Time format *(default = "24h")* |
-| `timezone`   | `string` (IANA timezone e.g. `Africa/Cairo`) | ❌ | Optional timezone override |
+| Option      | Type                          | Required | Description                                      |
+| ----------- | ----------------------------- | -------- | ------------------------------------------------ |
+| `city`      | `string`                      | ✅       | City name _(required if not using latitude)_     |
+| `country`   | `string`                      | ✅       | Country name _(required if not using latitude)_  |
+| `latitude`  | `number`                      | ✅       | Decimal latitude _(required if not using city)_  |
+| `longitude` | `number`                      | ✅       | Decimal longitude _(required if not using city)_ |
+| `method`    | `number`                      | ❌       | Calculation method _(default = 2)_               |
+| `format`    | `"12h"` \| `"24h"` \| `"iso"` | ❌       | Output time format _(default = "24h")_           |
+| `timezone`  | `string`                      | ❌       | Optional timezone override                       |
 
-> 📝 **Note:** You must provide either:
-> - `city` and `country`, **OR**
-> - `latitude` and `longitude`
-  
+---
+
+### 🧩 Methods
+
+| Method                                  | Description                                                                     |
+| --------------------------------------- | ------------------------------------------------------------------------------- |
+| `getTimes(date: Date)`                  | Get daily prayer times for a specific date                                      |
+| `getMonth(month: number, year: number)` | Get full calendar for a month                                                   |
+| `getRange(start: string, end: string)`  | Get prayer times for a custom date range (e.g., `"01-10-2025"`, `"07-10-2025"`) |
+| `toHijri(date: string)`                 | Convert Gregorian date to Hijri                                                 |
+| `toGregorian(date: string)`             | Convert Hijri date to Gregorian                                                 |
+
+---
 
 ## 🛠️ Calculation Methods
 
 Based on [AlAdhan API](https://aladhan.com/prayer-times-api#GetTimings):
 
-- 0 = Shia Ithna-Ashari
-- 1 = University of Islamic Sciences, Karachi
-- 2 = Islamic Society of North America
-- 3 = Muslim World League
-- 4 = Umm Al-Qura University, Makkah
-- 5 = Egyptian General Authority of Survey
-- ...
+| ID  | Method                                        |
+| --- | --------------------------------------------- |
+| 0   | Shia Ithna-Ashari                             |
+| 1   | University of Islamic Sciences, Karachi       |
+| 2   | Islamic Society of North America              |
+| 3   | Muslim World League                           |
+| 4   | Umm Al-Qura University, Makkah                |
+| 5   | Egyptian General Authority of Survey          |
+| 7   | Institute of Geophysics, University of Tehran |
+| 12  | Union Organization Islamic de France          |
+| ... | (see full list on AlAdhan API docs)           |
 
 ---
 
 ## 📬 Feedback & Support
 
-- 💬 [Join our Discord](https://dsc.gg/enexus)
-- 🧠 Open an issue or pull request anytime
+- 💬 [Join our Discord](https://discord.gg/AT6W2nHEVz)
+- 🧠 Open an issue or pull request on GitHub
 
 ---
 
 ## 📘 License
 
-This project is licensed under the MIT License — see the [`LICENSE`](./LICENSE) file for details.
+This project is licensed under the **Apache-2.0 License** — see the [`LICENSE`](./LICENSE) file for details.

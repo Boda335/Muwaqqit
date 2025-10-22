@@ -1,6 +1,6 @@
 {
   "name": "muwaqqit",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "A powerful and flexible TypeScript library for calculating Islamic prayer times based on location, with customizable settings.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,6 @@
     "prepublishOnly": "npm run test",
     "test": "echo \"No tests written yet. Add tests in the future.\""
   },
-  
   "keywords": [
     "prayer-times",
     "islam",
@@ -37,6 +36,7 @@
     "axios": "^1.6.0"
   },
   "devDependencies": {
+    "ts-node": "^10.9.2",
     "typescript": "^5.0.0"
   }
 }
